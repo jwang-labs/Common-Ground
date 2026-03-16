@@ -1,14 +1,79 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useGetPrecinctStats } from "@workspace/api-client-react";
-import { MapContainer, TileLayer, CircleMarker, Popup, useMap } from "react-leaflet";
-import { Activity, ShieldAlert, Award, TrendingUp } from "lucide-react";
+import { MapContainer, TileLayer, useMap, useMapEvents } from "react-leaflet";
+import { Activity, ShieldAlert, Award, X } from "lucide-react";
 import type { PrecinctStat } from "@workspace/api-client-react";
+import L from "leaflet";
+import "leaflet.heat";
+
+declare module "leaflet" {
+  function heatLayer(
+    latlngs: Array<[number, number, number?]>,
+    options?: Record<string, unknown>
+  ): L.Layer;
+}
 
 function SetViewOnData({ center, zoom }: { center: [number, number]; zoom: number }) {
   const map = useMap();
   useEffect(() => {
     map.setView(center, zoom);
   }, [center[0], center[1], zoom]);
+  return null;
+}
+
+function HeatmapLayer({ stats }: { stats: PrecinctStat[] }) {
+  const map = useMap();
+  const layerRef = useRef<L.Layer | null>(null);
+
+  useEffect(() => {
+    if (layerRef.current) {
+      map.removeLayer(layerRef.current);
+    }
+
+    if (!stats || stats.length === 0) return;
+
+    const maxReports = Math.max(...stats.map((s) => s.totalReports), 1);
+    const points: [number, number, number][] = stats.map((stat) => [
+      stat.latitude,
+      stat.longitude,
+      stat.totalReports / maxReports,
+    ]);
+
+    const heat = L.heatLayer(points, {
+      radius: 40,
+      blur: 30,
+      maxZoom: 17,
+      max: 1.0,
+      minOpacity: 0.3,
+      gradient: {
+        0.0: "#0d9488",
+        0.3: "#14b8a6",
+        0.5: "#f59e0b",
+        0.7: "#f97316",
+        0.85: "#ef4444",
+        1.0: "#dc2626",
+      },
+    });
+
+    heat.addTo(map);
+    layerRef.current = heat;
+
+    return () => {
+      if (layerRef.current) {
+        map.removeLayer(layerRef.current);
+      }
+    };
+  }, [stats, map]);
+
+  return null;
+}
+
+function MapClickHandler({ onMapClick }: { onMapClick: () => void }) {
+  useMapEvents({
+    click: () => {
+      onMapClick();
+    },
+  });
   return null;
 }
 
@@ -24,12 +89,22 @@ export default function MapPage() {
   return (
     <div className="flex flex-col h-[calc(100vh-4rem-5rem)] md:h-[calc(100vh-4rem)] w-full relative bg-slate-50 overflow-hidden animate-in fade-in duration-500">
       
-      {/* Map Overlay Panel */}
       <div className="absolute top-4 left-4 md:left-8 z-[1000] w-[calc(100%-2rem)] md:w-96 max-h-[80vh] flex flex-col pointer-events-none">
         <div className="bg-white/90 backdrop-blur-xl rounded-2xl shadow-2xl border border-white/50 p-5 pointer-events-auto flex flex-col gap-4">
-          <div>
-            <h1 className="text-2xl font-display font-bold text-slate-900">Precinct Data</h1>
-            <p className="text-sm text-slate-500">Select a precinct marker to view anonymized community statistics.</p>
+          <div className="flex items-start justify-between">
+            <div>
+              <h1 className="text-2xl font-display font-bold text-slate-900">Precinct Data</h1>
+              <p className="text-sm text-slate-500">Select a hotspot area to view anonymized community statistics.</p>
+            </div>
+            {selectedPrecinct && (
+              <button
+                onClick={() => setSelectedPrecinct(null)}
+                className="ml-2 mt-1 p-1.5 rounded-lg hover:bg-slate-100 transition-colors text-slate-400 hover:text-slate-600 flex-shrink-0"
+                aria-label="Close panel"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            )}
           </div>
 
           {selectedPrecinct ? (
@@ -94,7 +169,6 @@ export default function MapPage() {
         </div>
       </div>
 
-      {/* Map Container */}
       <div className="h-full w-full relative z-0">
         {isLoading && (
           <div className="absolute inset-0 bg-slate-100/50 backdrop-blur-sm z-[500] flex items-center justify-center">
@@ -118,42 +192,22 @@ export default function MapPage() {
             className="map-tiles"
           />
           
+          {stats && stats.length > 0 && <HeatmapLayer stats={stats} />}
+          
+          <MapClickHandler onMapClick={() => setSelectedPrecinct(null)} />
+          
           {(() => {
             const maxReports = Math.max(...(stats?.map(s => s.totalReports) || [1]), 1);
             return stats?.map((stat) => {
             const intensity = stat.totalReports / maxReports;
-            const isHotspot = intensity > 0.5;
-            const radius = Math.max(14, Math.min(45, 14 + intensity * 31));
-            
-            let fillColor: string;
-            if (intensity > 0.7) {
-              fillColor = '#dc2626';
-            } else if (intensity > 0.4) {
-              fillColor = '#f59e0b';
-            } else {
-              fillColor = '#0d9488';
-            }
 
             return (
-              <CircleMarker
+              <CircleMarkerInvisible
                 key={stat.precinct}
-                center={[stat.latitude, stat.longitude]}
-                radius={radius}
-                pathOptions={{ 
-                  fillColor,
-                  color: isHotspot ? '#fef2f2' : 'white', 
-                  weight: isHotspot ? 3 : 2,
-                  fillOpacity: isHotspot ? 0.8 : 0.6 
-                }}
-                eventHandlers={{
-                  click: () => setSelectedPrecinct(stat),
-                }}
-              >
-                <Popup className="custom-popup">
-                  <div className="font-bold text-center">{stat.precinct}</div>
-                  <div className="text-xs text-center text-slate-500 mt-1">Click to view details</div>
-                </Popup>
-              </CircleMarker>
+                stat={stat}
+                intensity={intensity}
+                onSelect={setSelectedPrecinct}
+              />
             );
           });
           })()}
@@ -161,11 +215,53 @@ export default function MapPage() {
       </div>
 
       <style>{`
-        /* Minimalist map styling */
         .map-tiles {
           filter: grayscale(0.8) contrast(1.2) brightness(1.1);
         }
       `}</style>
     </div>
   );
+}
+
+function CircleMarkerInvisible({ stat, intensity, onSelect }: { stat: PrecinctStat; intensity: number; onSelect: (s: PrecinctStat) => void }) {
+  const map = useMap();
+  const markerRef = useRef<L.CircleMarker | null>(null);
+
+  useEffect(() => {
+    const radius = Math.max(14, Math.min(45, 14 + intensity * 31));
+
+    const marker = L.circleMarker([stat.latitude, stat.longitude], {
+      radius,
+      fillColor: "transparent",
+      color: "transparent",
+      weight: 0,
+      fillOpacity: 0,
+    });
+
+    marker.on("click", (e) => {
+      L.DomEvent.stopPropagation(e);
+      onSelect(stat);
+    });
+
+    const tooltipEl = document.createElement("div");
+    const titleEl = document.createElement("div");
+    titleEl.style.cssText = "font-weight:bold;text-align:center";
+    titleEl.textContent = stat.precinct;
+    const subtitleEl = document.createElement("div");
+    subtitleEl.style.cssText = "font-size:11px;text-align:center;color:#64748b;margin-top:2px";
+    subtitleEl.textContent = "Click to view details";
+    tooltipEl.appendChild(titleEl);
+    tooltipEl.appendChild(subtitleEl);
+
+    marker.bindTooltip(tooltipEl, { direction: "top", offset: [0, -10] });
+
+    marker.addTo(map);
+    markerRef.current = marker;
+
+    return () => {
+      marker.remove();
+    };
+  }, [stat, intensity, map, onSelect]);
+
+  return null;
 }

@@ -212,6 +212,9 @@ importers:
       leaflet:
         specifier: ^1.9.4
         version: 1.9.4
+      leaflet.heat:
+        specifier: ^0.2.0
+        version: 0.2.0
       react-leaflet:
         specifier: ^5.0.0
         version: 5.0.0(leaflet@1.9.4)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
@@ -2354,6 +2357,9 @@ packages:
   jsonpointer@5.0.1:
     resolution: {integrity: sha512-p/nXbhSEcu3pZRdkW1OfJhpsVtW1gd4Wa1fnQc9YLiTfAjn0312eMKimbdIQzuZl9aa9xUGaRlP9T/CJE/ditQ==}
     engines: {node: '>=0.10.0'}
+
+  leaflet.heat@0.2.0:
+    resolution: {integrity: sha512-Cd5PbAA/rX3X3XKxfDoUGi9qp78FyhWYurFg3nsfhntcM/MCNK08pRkf4iEenO1KNqwVPKCmkyktjW3UD+h9bQ==}
 
   leaflet@1.9.4:
     resolution: {integrity: sha512-nxS1ynzJOmOlHp+iL3FyWqK89GtNL8U8rvlMOsQdTTssxZwCXh8N2NB3GDQOL+YR3XnWyZAxwQixURb+FA74PA==}
@@ -4862,6 +4868,8 @@ snapshots:
       graceful-fs: 4.2.11
 
   jsonpointer@5.0.1: {}
+
+  leaflet.heat@0.2.0: {}
 
   leaflet@1.9.4: {}
 
