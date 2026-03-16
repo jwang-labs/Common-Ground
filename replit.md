@@ -1,4 +1,4 @@
-# CommunityShield
+# Common Ground
 
 ## Overview
 

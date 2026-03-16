@@ -22,11 +22,11 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         <Link href="/" className="flex items-center gap-3 group">
           <img 
             src={`${import.meta.env.BASE_URL}images/logo-mark.png`} 
-            alt="CommunityShield Logo" 
+            alt="Common Ground Logo" 
             className="w-8 h-8 group-hover:scale-110 transition-transform duration-300"
           />
           <span className="font-display font-bold text-xl tracking-tight text-slate-900">
-            Community<span className="text-primary">Shield</span>
+            Common<span className="text-primary"> Ground</span>
           </span>
         </Link>
 
