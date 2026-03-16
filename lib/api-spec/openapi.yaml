@@ -3,13 +3,19 @@ info:
   # Do not change the title, if the title changes, the import paths will be broken
   title: Api
   version: 0.1.0
-  description: API specification
+  description: CommunityShield API
 servers:
   - url: /api
     description: Base API path
 tags:
   - name: health
     description: Health operations
+  - name: reports
+    description: Incident report operations
+  - name: recognitions
+    description: Officer recognition operations
+  - name: aggregate
+    description: Aggregate anonymized data operations
 paths:
   /healthz:
     get:
@@ -24,6 +30,160 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
+
+  /reports:
+    get:
+      operationId: listReports
+      tags: [reports]
+      summary: List user's own reports
+      responses:
+        "200":
+          description: List of reports
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Report"
+    post:
+      operationId: createReport
+      tags: [reports]
+      summary: Submit a new incident report
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateReportBody"
+      responses:
+        "201":
+          description: Report created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Report"
+        "400":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /reports/{id}:
+    get:
+      operationId: getReport
+      tags: [reports]
+      summary: Get a single report
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Report details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Report"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /recognitions:
+    get:
+      operationId: listRecognitions
+      tags: [recognitions]
+      summary: List recent officer recognitions (anonymized)
+      responses:
+        "200":
+          description: List of recognitions
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Recognition"
+    post:
+      operationId: createRecognition
+      tags: [recognitions]
+      summary: Submit an officer recognition
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateRecognitionBody"
+      responses:
+        "201":
+          description: Recognition created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Recognition"
+        "400":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /aggregate/precincts:
+    get:
+      operationId: getPrecinctStats
+      tags: [aggregate]
+      summary: Get aggregated anonymized stats by precinct for map view
+      responses:
+        "200":
+          description: Array of precinct-level aggregated data
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/PrecinctStat"
+
+  /aggregate/trends:
+    get:
+      operationId: getTrends
+      tags: [aggregate]
+      summary: Get trend data over time (anonymized)
+      parameters:
+        - name: period
+          in: query
+          schema:
+            type: string
+            enum: [week, month, quarter, year]
+            default: month
+      responses:
+        "200":
+          description: Trend data points
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/TrendPoint"
+
+  /rights:
+    get:
+      operationId: listRights
+      tags: [aggregate]
+      summary: Get know-your-rights information
+      responses:
+        "200":
+          description: List of rights cards
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/RightsCard"
+
 components:
   schemas:
     HealthStatus:
@@ -34,3 +194,184 @@ components:
       required:
         - status
 
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+      required:
+        - error
+
+    Report:
+      type: object
+      properties:
+        id:
+          type: integer
+        incidentType:
+          type: string
+        description:
+          type: string
+        badgeNumber:
+          type: ["string", "null"]
+        plateNumber:
+          type: ["string", "null"]
+        citationNumber:
+          type: ["string", "null"]
+        precinct:
+          type: ["string", "null"]
+        latitude:
+          type: ["number", "null"]
+        longitude:
+          type: ["number", "null"]
+        wasPolite:
+          type: ["boolean", "null"]
+        wasLawful:
+          type: ["boolean", "null"]
+        usedForce:
+          type: ["boolean", "null"]
+        explainedReason:
+          type: ["boolean", "null"]
+        status:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+      required:
+        - id
+        - incidentType
+        - description
+        - status
+        - createdAt
+
+    CreateReportBody:
+      type: object
+      properties:
+        incidentType:
+          type: string
+          enum: [traffic_stop, use_of_force, search, arrest, other]
+        description:
+          type: string
+        badgeNumber:
+          type: ["string", "null"]
+        plateNumber:
+          type: ["string", "null"]
+        citationNumber:
+          type: ["string", "null"]
+        precinct:
+          type: ["string", "null"]
+        latitude:
+          type: ["number", "null"]
+        longitude:
+          type: ["number", "null"]
+        wasPolite:
+          type: ["boolean", "null"]
+        wasLawful:
+          type: ["boolean", "null"]
+        usedForce:
+          type: ["boolean", "null"]
+        explainedReason:
+          type: ["boolean", "null"]
+      required:
+        - incidentType
+        - description
+
+    Recognition:
+      type: object
+      properties:
+        id:
+          type: integer
+        precinct:
+          type: ["string", "null"]
+        category:
+          type: string
+        message:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+      required:
+        - id
+        - category
+        - message
+        - createdAt
+
+    CreateRecognitionBody:
+      type: object
+      properties:
+        badgeNumber:
+          type: ["string", "null"]
+        precinct:
+          type: ["string", "null"]
+        category:
+          type: string
+          enum: [professionalism, de_escalation, community_service, helpfulness, above_and_beyond]
+        message:
+          type: string
+      required:
+        - category
+        - message
+
+    PrecinctStat:
+      type: object
+      properties:
+        precinct:
+          type: string
+        latitude:
+          type: number
+        longitude:
+          type: number
+        totalReports:
+          type: integer
+        totalRecognitions:
+          type: integer
+        avgPoliteness:
+          type: ["number", "null"]
+        avgLawfulness:
+          type: ["number", "null"]
+        forceRate:
+          type: ["number", "null"]
+        topIncidentType:
+          type: ["string", "null"]
+      required:
+        - precinct
+        - latitude
+        - longitude
+        - totalReports
+        - totalRecognitions
+
+    TrendPoint:
+      type: object
+      properties:
+        period:
+          type: string
+        reportCount:
+          type: integer
+        recognitionCount:
+          type: integer
+        forceIncidents:
+          type: integer
+      required:
+        - period
+        - reportCount
+        - recognitionCount
+        - forceIncidents
+
+    RightsCard:
+      type: object
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        category:
+          type: string
+        content:
+          type: string
+        icon:
+          type: string
+      required:
+        - id
+        - title
+        - category
+        - content
+        - icon
