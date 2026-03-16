@@ -13,13 +13,13 @@ const router: IRouter = Router();
 router.get("/aggregate/precincts", async (_req, res): Promise<void> => {
   const precinctCoords: Record<string, { lat: number; lng: number }> = {
     "Downtown": { lat: 30.2672, lng: -97.7431 },
-    "East Austin": { lat: 30.2634, lng: -97.7120 },
-    "Riverside": { lat: 30.2383, lng: -97.7380 },
-    "North Lamar": { lat: 30.3340, lng: -97.7137 },
-    "Rundberg": { lat: 30.3530, lng: -97.6930 },
-    "South Congress": { lat: 30.2460, lng: -97.7490 },
-    "West Campus": { lat: 30.2870, lng: -97.7440 },
-    "Mueller": { lat: 30.2980, lng: -97.7050 },
+    "East Austin": { lat: 30.2650, lng: -97.6850 },
+    "Riverside": { lat: 30.2250, lng: -97.7500 },
+    "North Lamar": { lat: 30.3350, lng: -97.7350 },
+    "Rundberg": { lat: 30.3750, lng: -97.6800 },
+    "South Congress": { lat: 30.2150, lng: -97.7850 },
+    "West Campus": { lat: 30.3050, lng: -97.7750 },
+    "Mueller": { lat: 30.3100, lng: -97.6700 },
   };
 
   const reportStats = await db

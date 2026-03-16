@@ -40,8 +40,8 @@ function HeatmapLayer({ stats }: { stats: PrecinctStat[] }) {
     ]);
 
     const heat = L.heatLayer(points, {
-      radius: 40,
-      blur: 30,
+      radius: 20,
+      blur: 15,
       maxZoom: 17,
       max: 1.0,
       minOpacity: 0.3,
