@@ -1,15 +1,22 @@
 import { useEffect, useState } from "react";
 import { useGetPrecinctStats } from "@workspace/api-client-react";
-import { MapContainer, TileLayer, CircleMarker, Popup } from "react-leaflet";
+import { MapContainer, TileLayer, CircleMarker, Popup, useMap } from "react-leaflet";
 import { Activity, ShieldAlert, Award, TrendingUp } from "lucide-react";
 import type { PrecinctStat } from "@workspace/api-client-react";
+
+function SetViewOnData({ center, zoom }: { center: [number, number]; zoom: number }) {
+  const map = useMap();
+  useEffect(() => {
+    map.setView(center, zoom);
+  }, [center[0], center[1], zoom]);
+  return null;
+}
 
 export default function MapPage() {
   const { data: stats, isLoading } = useGetPrecinctStats();
   const [selectedPrecinct, setSelectedPrecinct] = useState<PrecinctStat | null>(null);
 
-  // Fallback center if no data (e.g., center of US)
-  const defaultCenter: [number, number] = [39.8283, -98.5795];
+  const defaultCenter: [number, number] = [30.2672, -97.7431];
   const mapCenter = stats && stats.length > 0 
     ? [stats[0].latitude, stats[0].longitude] as [number, number]
     : defaultCenter;
@@ -104,28 +111,39 @@ export default function MapPage() {
           className="h-full w-full z-0"
           zoomControl={false}
         >
+          <SetViewOnData center={mapCenter} zoom={stats && stats.length > 0 ? 12 : 10} />
           <TileLayer
             attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
             className="map-tiles"
           />
           
-          {stats?.map((stat) => {
-            // Calculate color and size based on data
-            const ratio = stat.totalRecognitions / Math.max(1, stat.totalReports);
-            const isPositive = ratio > 0.5;
-            const radius = Math.max(12, Math.min(40, stat.totalReports * 2));
+          {(() => {
+            const maxReports = Math.max(...(stats?.map(s => s.totalReports) || [1]), 1);
+            return stats?.map((stat) => {
+            const intensity = stat.totalReports / maxReports;
+            const isHotspot = intensity > 0.5;
+            const radius = Math.max(14, Math.min(45, 14 + intensity * 31));
             
+            let fillColor: string;
+            if (intensity > 0.7) {
+              fillColor = '#dc2626';
+            } else if (intensity > 0.4) {
+              fillColor = '#f59e0b';
+            } else {
+              fillColor = '#0d9488';
+            }
+
             return (
               <CircleMarker
                 key={stat.precinct}
                 center={[stat.latitude, stat.longitude]}
                 radius={radius}
                 pathOptions={{ 
-                  fillColor: isPositive ? '#0d9488' : '#2563eb', // Teal or Blue
-                  color: 'white', 
-                  weight: 2,
-                  fillOpacity: 0.7 
+                  fillColor,
+                  color: isHotspot ? '#fef2f2' : 'white', 
+                  weight: isHotspot ? 3 : 2,
+                  fillOpacity: isHotspot ? 0.8 : 0.6 
                 }}
                 eventHandlers={{
                   click: () => setSelectedPrecinct(stat),
@@ -137,7 +155,8 @@ export default function MapPage() {
                 </Popup>
               </CircleMarker>
             );
-          })}
+          });
+          })()}
         </MapContainer>
       </div>
 

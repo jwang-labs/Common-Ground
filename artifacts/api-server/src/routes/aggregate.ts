@@ -12,14 +12,14 @@ const router: IRouter = Router();
 
 router.get("/aggregate/precincts", async (_req, res): Promise<void> => {
   const precinctCoords: Record<string, { lat: number; lng: number }> = {
-    "Precinct 1": { lat: 40.7128, lng: -74.006 },
-    "Precinct 2": { lat: 40.7282, lng: -73.7949 },
-    "Precinct 3": { lat: 40.6782, lng: -73.9442 },
-    "Precinct 4": { lat: 40.7589, lng: -73.9851 },
-    "Precinct 5": { lat: 40.6892, lng: -74.0445 },
-    "Precinct 6": { lat: 40.7484, lng: -73.9857 },
-    "Precinct 7": { lat: 40.7061, lng: -74.0087 },
-    "Precinct 8": { lat: 40.7831, lng: -73.9712 },
+    "Downtown": { lat: 30.2672, lng: -97.7431 },
+    "East Austin": { lat: 30.2634, lng: -97.7120 },
+    "Riverside": { lat: 30.2383, lng: -97.7380 },
+    "North Lamar": { lat: 30.3340, lng: -97.7137 },
+    "Rundberg": { lat: 30.3530, lng: -97.6930 },
+    "South Congress": { lat: 30.2460, lng: -97.7490 },
+    "West Campus": { lat: 30.2870, lng: -97.7440 },
+    "Mueller": { lat: 30.2980, lng: -97.7050 },
   };
 
   const reportStats = await db
@@ -54,7 +54,7 @@ router.get("/aggregate/precincts", async (_req, res): Promise<void> => {
   const repMap = new Map(reportStats.map((r) => [r.precinct, r]));
 
   const result = Array.from(allPrecincts).map((precinct) => {
-    const coords = precinctCoords[precinct] || { lat: 40.7128, lng: -74.006 };
+    const coords = precinctCoords[precinct] || { lat: 30.2672, lng: -97.7431 };
     const rep = repMap.get(precinct);
     return {
       precinct,

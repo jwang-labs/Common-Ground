@@ -126,7 +126,7 @@ export default function Report() {
                     type="text" 
                     value={formData.precinct || ''} 
                     onChange={e => updateForm('precinct', e.target.value)}
-                    placeholder="e.g., 5th Precinct"
+                    placeholder="e.g., Downtown, East Austin, Rundberg"
                     className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-primary focus:ring-4 focus:ring-primary/10 outline-none transition-all"
                   />
                 </div>
