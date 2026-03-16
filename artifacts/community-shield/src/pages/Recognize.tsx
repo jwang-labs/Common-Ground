@@ -33,16 +33,16 @@ export default function Recognize() {
   if (submitted) {
     return (
       <div className="max-w-2xl mx-auto px-3 md:px-4 py-10 md:py-16 w-full text-center animate-in zoom-in-95 duration-300">
-        <div className="w-16 h-16 md:w-24 md:h-24 bg-teal-100 text-teal-600 rounded-full flex items-center justify-center mx-auto mb-4 md:mb-6">
+        <div className="w-16 h-16 md:w-24 md:h-24 bg-teal-500/10 text-teal-400 rounded-full flex items-center justify-center mx-auto mb-4 md:mb-6">
           <Award className="w-8 h-8 md:w-12 md:h-12" />
         </div>
-        <h1 className="text-2xl md:text-4xl font-display font-bold text-slate-900 mb-3 md:mb-4">Recognition Sent!</h1>
-        <p className="text-sm md:text-lg text-slate-600 mb-6 md:mb-8">
+        <h1 className="text-2xl md:text-4xl font-display font-bold text-foreground mb-3 md:mb-4">Recognition Sent!</h1>
+        <p className="text-sm md:text-lg text-muted-foreground mb-6 md:mb-8">
           Thank you for taking the time to highlight positive community policing. This feedback is incredibly valuable for department training and morale.
         </p>
         <button 
           onClick={() => { setSubmitted(false); setFormData({ category: "professionalism" }); }}
-          className="px-6 md:px-8 py-2.5 md:py-3 bg-secondary text-white font-semibold rounded-full hover:bg-secondary/90 transition-colors"
+          className="px-6 md:px-8 py-2.5 md:py-3 bg-secondary text-secondary-foreground font-semibold rounded-full hover:bg-secondary/90 transition-colors"
         >
           Send Another
         </button>
@@ -56,15 +56,15 @@ export default function Recognize() {
         <div className="inline-flex items-center justify-center w-10 h-10 md:w-16 md:h-16 rounded-full bg-secondary/10 mb-2 md:mb-4">
           <Award className="w-5 h-5 md:w-8 md:h-8 text-secondary" />
         </div>
-        <h1 className="text-2xl md:text-4xl font-display font-bold text-slate-900 mb-1 md:mb-2">Recognize an Officer</h1>
-        <p className="text-sm md:text-base text-slate-600 max-w-xl mx-auto">Positive reinforcement helps build the culture we want to see. Your feedback will be shared anonymously.</p>
+        <h1 className="text-2xl md:text-4xl font-display font-bold text-foreground mb-1 md:mb-2">Recognize an Officer</h1>
+        <p className="text-sm md:text-base text-muted-foreground max-w-xl mx-auto">Positive reinforcement helps build the culture we want to see. Your feedback will be shared anonymously.</p>
       </div>
 
-      <div className="bg-white rounded-2xl md:rounded-3xl shadow-lg md:shadow-xl shadow-slate-200/50 border border-slate-100 p-4 md:p-10">
+      <div className="bg-card rounded-2xl md:rounded-3xl shadow-lg md:shadow-xl dark:shadow-none border border-border p-4 md:p-10">
         <form onSubmit={handleSubmit} className="space-y-5 md:space-y-8">
           
           <div>
-            <label className="block text-sm font-semibold text-slate-700 mb-2 md:mb-3">Why are you recognizing them?</label>
+            <label className="block text-sm font-semibold text-foreground mb-2 md:mb-3">Why are you recognizing them?</label>
             <div className="grid grid-cols-2 md:grid-cols-3 gap-2 md:gap-3">
               {categories.map(cat => {
                 const Icon = cat.icon;
@@ -77,7 +77,7 @@ export default function Recognize() {
                     className={`flex flex-col items-center justify-center gap-1.5 md:gap-2 p-3 md:p-4 rounded-xl md:rounded-2xl border-2 transition-all ${
                       isSelected 
                         ? 'border-secondary bg-secondary/5 text-secondary shadow-sm' 
-                        : 'border-slate-100 bg-white text-slate-600 hover:border-slate-200 hover:bg-slate-50'
+                        : 'border-border bg-card text-muted-foreground hover:border-muted-foreground/30 hover:bg-muted'
                     }`}
                   >
                     <Icon className="w-5 h-5 md:w-6 md:h-6" />
@@ -90,43 +90,43 @@ export default function Recognize() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-5">
             <div>
-              <label className="block text-sm font-semibold text-slate-700 mb-1.5 md:mb-2">Badge Number (Optional)</label>
+              <label className="block text-sm font-semibold text-foreground mb-1.5 md:mb-2">Badge Number (Optional)</label>
               <input 
                 type="text" 
                 value={formData.badgeNumber || ''}
                 onChange={e => setFormData({ ...formData, badgeNumber: e.target.value })}
                 placeholder="e.g., 12345"
-                className="w-full px-3 md:px-4 py-2.5 md:py-3 rounded-xl border border-slate-200 focus:border-secondary focus:ring-4 focus:ring-secondary/10 outline-none transition-all text-sm md:text-base"
+                className="w-full px-3 md:px-4 py-2.5 md:py-3 rounded-xl border border-border bg-background text-foreground placeholder:text-muted-foreground focus:border-secondary focus:ring-4 focus:ring-secondary/10 outline-none transition-all text-sm md:text-base"
               />
             </div>
             <div>
-              <label className="block text-sm font-semibold text-slate-700 mb-1.5 md:mb-2">Precinct / Area (Optional)</label>
+              <label className="block text-sm font-semibold text-foreground mb-1.5 md:mb-2">Precinct / Area (Optional)</label>
               <input 
                 type="text" 
                 value={formData.precinct || ''}
                 onChange={e => setFormData({ ...formData, precinct: e.target.value })}
                 placeholder="e.g., Downtown"
-                className="w-full px-3 md:px-4 py-2.5 md:py-3 rounded-xl border border-slate-200 focus:border-secondary focus:ring-4 focus:ring-secondary/10 outline-none transition-all text-sm md:text-base"
+                className="w-full px-3 md:px-4 py-2.5 md:py-3 rounded-xl border border-border bg-background text-foreground placeholder:text-muted-foreground focus:border-secondary focus:ring-4 focus:ring-secondary/10 outline-none transition-all text-sm md:text-base"
               />
             </div>
           </div>
 
           <div>
-            <label className="block text-sm font-semibold text-slate-700 mb-1.5 md:mb-2">Message <span className="text-red-500">*</span></label>
+            <label className="block text-sm font-semibold text-foreground mb-1.5 md:mb-2">Message <span className="text-red-500">*</span></label>
             <textarea 
               required
               value={formData.message || ''}
               onChange={e => setFormData({ ...formData, message: e.target.value })}
               placeholder="Describe the positive interaction you had..."
               rows={4}
-              className="w-full px-3 md:px-4 py-2.5 md:py-3 rounded-xl border border-slate-200 focus:border-secondary focus:ring-4 focus:ring-secondary/10 outline-none transition-all resize-none text-sm md:text-base"
+              className="w-full px-3 md:px-4 py-2.5 md:py-3 rounded-xl border border-border bg-background text-foreground placeholder:text-muted-foreground focus:border-secondary focus:ring-4 focus:ring-secondary/10 outline-none transition-all resize-none text-sm md:text-base"
             />
           </div>
 
           <button 
             type="submit"
             disabled={isPending || !formData.message}
-            className="w-full py-3 md:py-4 bg-secondary text-white rounded-xl font-bold text-base md:text-lg shadow-lg shadow-secondary/25 hover:shadow-xl hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed transition-all flex justify-center items-center gap-2"
+            className="w-full py-3 md:py-4 bg-secondary text-secondary-foreground rounded-full font-bold text-base md:text-lg shadow-lg shadow-secondary/25 hover:shadow-xl hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed transition-all flex justify-center items-center gap-2"
           >
             {isPending ? "Sending..." : "Submit Recognition"} <CheckCircle2 className="w-5 h-5" />
           </button>

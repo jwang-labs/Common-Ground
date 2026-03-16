@@ -46,28 +46,28 @@ export default function Rights() {
       {/* Header */}
       <div className="mb-5 md:mb-10 text-center md:text-left flex flex-col md:flex-row md:items-end justify-between gap-4 md:gap-6">
         <div>
-          <div className="inline-flex items-center justify-center w-10 h-10 md:w-16 md:h-16 rounded-full bg-indigo-100 text-indigo-600 mb-2 md:mb-6">
+          <div className="inline-flex items-center justify-center w-10 h-10 md:w-16 md:h-16 rounded-full bg-indigo-500/10 text-indigo-400 mb-2 md:mb-6">
             <BookOpen className="w-5 h-5 md:w-8 md:h-8" />
           </div>
-          <h1 className="text-2xl md:text-5xl font-display font-bold text-slate-900 mb-1 md:mb-3">Know Your Rights</h1>
-          <p className="text-sm md:text-lg text-slate-600 max-w-2xl">
+          <h1 className="text-2xl md:text-5xl font-display font-bold text-foreground mb-1 md:mb-3">Know Your Rights</h1>
+          <p className="text-sm md:text-lg text-muted-foreground max-w-2xl">
             Knowledge is your best protection. Understand your legal rights during interactions with law enforcement.
           </p>
         </div>
       </div>
 
       {/* Emergency Quick Action */}
-      <div className="bg-red-50 border border-red-100 rounded-xl md:rounded-2xl p-3 md:p-5 mb-5 md:mb-8 flex flex-col sm:flex-row items-center justify-between gap-3 md:gap-4">
+      <div className="bg-red-500/10 border border-red-500/20 rounded-xl md:rounded-2xl p-3 md:p-5 mb-5 md:mb-8 flex flex-col sm:flex-row items-center justify-between gap-3 md:gap-4">
         <div className="flex items-center gap-3 md:gap-4">
-          <div className="w-10 h-10 md:w-12 md:h-12 bg-red-100 rounded-full flex items-center justify-center text-red-600 shrink-0">
+          <div className="w-10 h-10 md:w-12 md:h-12 bg-red-500/10 rounded-full flex items-center justify-center text-red-400 shrink-0">
             <ShieldAlert className="w-5 h-5 md:w-6 md:h-6" />
           </div>
           <div>
-            <h3 className="font-bold text-red-900 text-sm md:text-base">Need immediate legal help?</h3>
-            <p className="text-xs md:text-sm text-red-700">If you've been arrested, ask for a lawyer immediately.</p>
+            <h3 className="font-bold text-red-400 text-sm md:text-base">Need immediate legal help?</h3>
+            <p className="text-xs md:text-sm text-red-400/80">If you've been arrested, ask for a lawyer immediately.</p>
           </div>
         </div>
-        <button className="w-full sm:w-auto px-5 md:px-6 py-2 md:py-2.5 bg-white text-red-700 font-semibold rounded-full border border-red-200 shadow-sm hover:bg-red-50 transition-colors flex items-center justify-center gap-2 text-sm md:text-base">
+        <button className="w-full sm:w-auto px-5 md:px-6 py-2 md:py-2.5 bg-card text-red-400 font-semibold rounded-full border border-red-500/20 shadow-sm hover:bg-muted transition-colors flex items-center justify-center gap-2 text-sm md:text-base">
           <PhoneCall className="w-4 h-4" /> Call Legal Aid
         </button>
       </div>
@@ -76,17 +76,17 @@ export default function Rights() {
       <div className="space-y-3 md:space-y-4">
         {isLoading ? (
           Array(4).fill(0).map((_, i) => (
-            <div key={i} className="h-16 md:h-20 bg-slate-100 animate-pulse rounded-xl md:rounded-2xl"></div>
+            <div key={i} className="h-16 md:h-20 bg-muted animate-pulse rounded-xl md:rounded-2xl"></div>
           ))
         ) : (
           rights.map((right) => (
             <div 
               key={right.id} 
               className={cn(
-                "bg-white rounded-xl md:rounded-2xl border transition-all duration-300 overflow-hidden",
+                "bg-card rounded-xl md:rounded-2xl border transition-all duration-300 overflow-hidden",
                 openCardId === right.id 
-                  ? "border-primary shadow-lg shadow-primary/5" 
-                  : "border-slate-200 hover:border-slate-300"
+                  ? "border-primary shadow-lg dark:shadow-none shadow-primary/5" 
+                  : "border-border hover:border-muted-foreground/30"
               )}
             >
               <button 
@@ -96,19 +96,19 @@ export default function Rights() {
                 <div className="flex items-center gap-3 md:gap-4">
                   <div className={cn(
                     "w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center transition-colors",
-                    openCardId === right.id ? "bg-primary text-white" : "bg-slate-100 text-slate-500"
+                    openCardId === right.id ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground"
                   )}>
                     <Scale className="w-4 h-4 md:w-5 md:h-5" />
                   </div>
                   <h3 className={cn(
                     "text-base md:text-lg font-bold transition-colors",
-                    openCardId === right.id ? "text-primary" : "text-slate-800"
+                    openCardId === right.id ? "text-primary" : "text-foreground"
                   )}>
                     {right.title}
                   </h3>
                 </div>
                 <ChevronDown className={cn(
-                  "w-5 h-5 text-slate-400 transition-transform duration-300 shrink-0 ml-2",
+                  "w-5 h-5 text-muted-foreground transition-transform duration-300 shrink-0 ml-2",
                   openCardId === right.id && "rotate-180 text-primary"
                 )} />
               </button>
@@ -120,7 +120,7 @@ export default function Rights() {
                 )}
               >
                 <div className="overflow-hidden">
-                  <div className="p-3.5 md:p-5 pt-0 border-t border-slate-100 mt-1 md:mt-2 text-slate-600 leading-relaxed text-sm md:text-lg">
+                  <div className="p-3.5 md:p-5 pt-0 border-t border-border mt-1 md:mt-2 text-muted-foreground leading-relaxed text-sm md:text-lg">
                     {right.content}
                   </div>
                 </div>
@@ -130,7 +130,7 @@ export default function Rights() {
         )}
       </div>
 
-      <div className="mt-8 md:mt-12 text-center text-xs md:text-sm text-slate-400">
+      <div className="mt-8 md:mt-12 text-center text-xs md:text-sm text-muted-foreground">
         Disclaimer: This information is for educational purposes and does not constitute legal advice.
       </div>
     </div>

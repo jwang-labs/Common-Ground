@@ -93,20 +93,19 @@ export default function MapPage() {
   };
 
   return (
-    <div className="flex flex-col h-[calc(100vh-4rem-5rem)] md:h-[calc(100vh-4rem)] w-full relative bg-slate-50 overflow-hidden animate-in fade-in duration-500">
+    <div className="flex flex-col h-[calc(100vh-4rem-5rem)] md:h-[calc(100vh-4rem)] w-full relative bg-background overflow-hidden animate-in fade-in duration-500">
       
-      {/* Desktop Overlay Panel */}
-      <div className="hidden md:flex absolute top-4 left-8 z-[1000] w-96 max-h-[80vh] flex-col pointer-events-none">
-        <div className="bg-white/90 backdrop-blur-xl rounded-2xl shadow-2xl border border-white/50 p-5 pointer-events-auto flex flex-col gap-4">
+      <div className="absolute top-4 left-4 md:left-8 z-[1000] w-[calc(100%-2rem)] md:w-96 max-h-[80vh] flex flex-col pointer-events-none">
+        <div className="bg-card/90 backdrop-blur-xl rounded-2xl shadow-2xl dark:shadow-none border border-border p-5 pointer-events-auto flex flex-col gap-4">
           <div className="flex items-start justify-between">
             <div>
-              <h1 className="text-2xl font-display font-bold text-slate-900">Precinct Data</h1>
-              <p className="text-sm text-slate-500">Select a hotspot area to view anonymized community statistics.</p>
+              <h1 className="text-2xl font-display font-bold text-foreground">Precinct Data</h1>
+              <p className="text-sm text-muted-foreground">Select a hotspot area to view anonymized community statistics.</p>
             </div>
             {selectedPrecinct && (
               <button
                 onClick={() => setSelectedPrecinct(null)}
-                className="ml-2 mt-1 p-1.5 rounded-lg hover:bg-slate-100 transition-colors text-slate-400 hover:text-slate-600 flex-shrink-0"
+                className="ml-2 mt-1 p-1.5 rounded-lg hover:bg-muted transition-colors text-muted-foreground hover:text-foreground flex-shrink-0"
                 aria-label="Close panel"
               >
                 <X className="w-5 h-5" />
@@ -117,27 +116,26 @@ export default function MapPage() {
           {selectedPrecinct ? (
             <PrecinctDetails precinct={selectedPrecinct} />
           ) : (
-            <div className="py-8 text-center border-t border-slate-100">
-              <Activity className="w-12 h-12 text-slate-300 mx-auto mb-3" />
-              <p className="text-slate-500 font-medium">No precinct selected</p>
+            <div className="py-8 text-center border-t border-border">
+              <Activity className="w-12 h-12 text-muted-foreground/50 mx-auto mb-3" />
+              <p className="text-muted-foreground font-medium">No precinct selected</p>
             </div>
           )}
         </div>
       </div>
 
-      {/* Mobile Bottom Sheet */}
       <div className={`md:hidden absolute bottom-0 left-0 right-0 z-[1000] transition-transform duration-300 ease-out ${sheetExpanded ? 'translate-y-0' : 'translate-y-[calc(100%-3.5rem)]'}`}>
-        <div className="bg-white/95 backdrop-blur-xl rounded-t-2xl shadow-[0_-4px_24px_rgba(0,0,0,0.12)] border-t border-slate-200">
+        <div className="bg-card/95 backdrop-blur-xl rounded-t-2xl shadow-[0_-4px_24px_rgba(0,0,0,0.12)] dark:shadow-none border-t border-border">
           <button 
             onClick={() => setSheetExpanded(!sheetExpanded)}
             className="w-full flex flex-col items-center pt-2 pb-3 px-4"
           >
-            <div className="w-10 h-1 bg-slate-300 rounded-full mb-2"></div>
+            <div className="w-10 h-1 bg-muted rounded-full mb-2"></div>
             <div className="w-full flex items-center justify-between">
-              <span className="text-sm font-bold text-slate-900">
+              <span className="text-sm font-bold text-foreground">
                 {selectedPrecinct ? selectedPrecinct.precinct : "Precinct Data"}
               </span>
-              <ChevronUp className={`w-4 h-4 text-slate-400 transition-transform duration-300 ${sheetExpanded ? 'rotate-180' : ''}`} />
+              <ChevronUp className={`w-4 h-4 text-muted-foreground transition-transform duration-300 ${sheetExpanded ? 'rotate-180' : ''}`} />
             </div>
           </button>
           
@@ -146,8 +144,8 @@ export default function MapPage() {
               <PrecinctDetails precinct={selectedPrecinct} />
             ) : (
               <div className="py-6 text-center">
-                <Activity className="w-10 h-10 text-slate-300 mx-auto mb-2" />
-                <p className="text-slate-500 text-sm font-medium">Tap a marker to view details</p>
+                <Activity className="w-10 h-10 text-muted-foreground/30 mx-auto mb-2" />
+                <p className="text-muted-foreground text-sm font-medium">Tap a marker to view details</p>
               </div>
             )}
           </div>
@@ -157,10 +155,10 @@ export default function MapPage() {
       {/* Map Container */}
       <div className="h-full w-full relative z-0">
         {isLoading && (
-          <div className="absolute inset-0 bg-slate-100/50 backdrop-blur-sm z-[500] flex items-center justify-center">
-            <div className="bg-white px-6 py-4 rounded-full shadow-lg flex items-center gap-3">
+          <div className="absolute inset-0 bg-background/50 backdrop-blur-sm z-[500] flex items-center justify-center">
+            <div className="bg-card px-6 py-4 rounded-full shadow-lg dark:shadow-none border border-border flex items-center gap-3">
               <div className="w-5 h-5 border-2 border-primary border-t-transparent rounded-full animate-spin"></div>
-              <span className="font-medium text-slate-700">Loading map data...</span>
+              <span className="font-medium text-foreground">Loading map data...</span>
             </div>
           </div>
         )}
@@ -204,6 +202,9 @@ export default function MapPage() {
         .map-tiles {
           filter: grayscale(0.8) contrast(1.2) brightness(1.1);
         }
+        .dark .map-tiles {
+          filter: grayscale(0.8) contrast(1.2) brightness(0.7) invert(1) hue-rotate(180deg);
+        }
       `}</style>
     </div>
   );
@@ -234,7 +235,7 @@ function CircleMarkerInvisible({ stat, intensity, onSelect }: { stat: PrecinctSt
     titleEl.style.cssText = "font-weight:bold;text-align:center";
     titleEl.textContent = stat.precinct;
     const subtitleEl = document.createElement("div");
-    subtitleEl.style.cssText = "font-size:11px;text-align:center;color:#64748b;margin-top:2px";
+    subtitleEl.style.cssText = "font-size:11px;text-align:center;color:#94a3b8;margin-top:2px";
     subtitleEl.textContent = "Click to view details";
     tooltipEl.appendChild(titleEl);
     tooltipEl.appendChild(subtitleEl);
@@ -255,35 +256,35 @@ function CircleMarkerInvisible({ stat, intensity, onSelect }: { stat: PrecinctSt
 function PrecinctDetails({ precinct }: { precinct: PrecinctStat }) {
   return (
     <div className="animate-in slide-in-from-right-4 duration-300">
-      <div className="py-3 border-t border-slate-100">
+      <div className="py-3 border-t border-border">
         <h2 className="text-lg font-bold text-primary mb-3">{precinct.precinct}</h2>
         
         <div className="grid grid-cols-2 gap-3 mb-4">
-          <div className="bg-slate-50 rounded-xl p-3 border border-slate-100">
-            <div className="flex items-center gap-2 text-slate-500 mb-1">
+          <div className="bg-muted rounded-xl p-3 border border-border">
+            <div className="flex items-center gap-2 text-muted-foreground mb-1">
               <ShieldAlert className="w-4 h-4" />
               <span className="text-xs font-medium uppercase tracking-wider">Reports</span>
             </div>
-            <span className="text-2xl font-bold text-slate-900">{precinct.totalReports}</span>
+            <span className="text-2xl font-bold text-foreground">{precinct.totalReports}</span>
           </div>
           
-          <div className="bg-slate-50 rounded-xl p-3 border border-slate-100">
-            <div className="flex items-center gap-2 text-slate-500 mb-1">
+          <div className="bg-muted rounded-xl p-3 border border-border">
+            <div className="flex items-center gap-2 text-muted-foreground mb-1">
               <Award className="w-4 h-4" />
               <span className="text-xs font-medium uppercase tracking-wider">Praises</span>
             </div>
-            <span className="text-2xl font-bold text-slate-900">{precinct.totalRecognitions}</span>
+            <span className="text-2xl font-bold text-foreground">{precinct.totalRecognitions}</span>
           </div>
         </div>
 
         <div className="space-y-3">
           <div className="flex justify-between items-center">
-            <span className="text-sm text-slate-600">Politeness Rating</span>
-            <span className="text-sm font-bold text-slate-900">
+            <span className="text-sm text-muted-foreground">Politeness Rating</span>
+            <span className="text-sm font-bold text-foreground">
               {precinct.avgPoliteness ? `${(precinct.avgPoliteness * 100).toFixed(0)}%` : 'N/A'}
             </span>
           </div>
-          <div className="w-full bg-slate-100 rounded-full h-2">
+          <div className="w-full bg-muted rounded-full h-2">
             <div 
               className="bg-primary h-2 rounded-full" 
               style={{ width: `${(precinct.avgPoliteness || 0) * 100}%` }}
@@ -291,15 +292,15 @@ function PrecinctDetails({ precinct }: { precinct: PrecinctStat }) {
           </div>
 
           <div className="flex justify-between items-center pt-2">
-            <span className="text-sm text-slate-600">Use of Force Rate</span>
-            <span className="text-sm font-bold text-orange-600">
+            <span className="text-sm text-muted-foreground">Use of Force Rate</span>
+            <span className="text-sm font-bold text-orange-400">
               {precinct.forceRate ? `${(precinct.forceRate * 100).toFixed(1)}%` : 'N/A'}
             </span>
           </div>
           
           <div className="flex justify-between items-center pt-2">
-            <span className="text-sm text-slate-600">Top Incident Type</span>
-            <span className="text-sm font-bold text-slate-900 capitalize">
+            <span className="text-sm text-muted-foreground">Top Incident Type</span>
+            <span className="text-sm font-bold text-foreground capitalize">
               {precinct.topIncidentType?.replace('_', ' ') || 'Unknown'}
             </span>
           </div>

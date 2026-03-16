@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 @import "leaflet/dist/leaflet.css";
 @import "tailwindcss";
 @import "tw-animate-css";
@@ -51,8 +51,8 @@
 }
 
 :root {
-  --app-font-sans: 'DM Sans', sans-serif;
-  --app-font-display: 'Outfit', sans-serif;
+  --app-font-sans: 'Inter', sans-serif;
+  --app-font-display: 'Inter', sans-serif;
   --radius: 1rem;
 
   /* Trust Blue / Civic Tech Palette */
@@ -102,49 +102,49 @@
 }
 
 .dark {
-  --background: 222 47% 11%;
-  --foreground: 210 40% 98%;
+  --background: 222 59% 5%;
+  --foreground: 210 40% 96%;
   
-  --border: 217 33% 17%;
-  --input: 217 33% 17%;
-  --ring: 224 76% 48%;
+  --border: 220 30% 14%;
+  --input: 220 30% 14%;
+  --ring: 217 91% 60%;
   
-  --card: 222 47% 11%;
-  --card-foreground: 210 40% 98%;
-  --card-border: 217 33% 17%;
+  --card: 220 40% 10%;
+  --card-foreground: 210 40% 96%;
+  --card-border: 220 30% 14%;
   
-  --popover: 222 47% 11%;
-  --popover-foreground: 210 40% 98%;
-  --popover-border: 217 33% 17%;
+  --popover: 220 40% 10%;
+  --popover-foreground: 210 40% 96%;
+  --popover-border: 220 30% 14%;
   
   --primary: 217 91% 60%;
-  --primary-foreground: 222 47% 11%;
+  --primary-foreground: 0 0% 100%;
   --primary-border: 217 91% 50%;
   
   --secondary: 182 85% 38%;
   --secondary-foreground: 0 0% 100%;
   --secondary-border: 182 85% 30%;
   
-  --muted: 217 33% 17%;
+  --muted: 220 30% 14%;
   --muted-foreground: 215 20% 65%;
-  --muted-border: 217 33% 20%;
+  --muted-border: 220 30% 18%;
   
-  --accent: 217 33% 17%;
-  --accent-foreground: 210 40% 98%;
-  --accent-border: 217 33% 20%;
+  --accent: 220 30% 14%;
+  --accent-foreground: 210 40% 96%;
+  --accent-border: 220 30% 18%;
   
   --destructive: 0 62% 30%;
   --destructive-foreground: 210 40% 98%;
   --destructive-border: 0 62% 20%;
   
-  --sidebar: 222 47% 11%;
-  --sidebar-foreground: 210 40% 98%;
-  --sidebar-border: 217 33% 17%;
-  --sidebar-primary: 224 76% 48%;
+  --sidebar: 222 59% 5%;
+  --sidebar-foreground: 210 40% 96%;
+  --sidebar-border: 220 30% 14%;
+  --sidebar-primary: 217 91% 60%;
   --sidebar-primary-foreground: 0 0% 100%;
-  --sidebar-accent: 217 33% 17%;
-  --sidebar-accent-foreground: 210 40% 98%;
-  --sidebar-ring: 224 76% 48%;
+  --sidebar-accent: 220 30% 14%;
+  --sidebar-accent-foreground: 210 40% 96%;
+  --sidebar-ring: 217 91% 60%;
 }
 
 @layer base {
