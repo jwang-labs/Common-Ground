@@ -3,7 +3,6 @@ import { useListRights } from "@workspace/api-client-react";
 import { BookOpen, ChevronDown, ShieldAlert, PhoneCall, Scale, Hand } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-// Fallback data for beautiful UI even if backend doesn't seed rights
 const FALLBACK_RIGHTS = [
   {
     id: 1,
@@ -39,53 +38,52 @@ export default function Rights() {
   const { data: rightsData, isLoading } = useListRights();
   const [openCardId, setOpenCardId] = useState<number | null>(1);
   
-  // Use API data if available, otherwise beautiful fallback
   const rights = rightsData && rightsData.length > 0 ? rightsData : FALLBACK_RIGHTS;
 
   return (
-    <div className="max-w-4xl mx-auto px-4 py-8 md:py-12 w-full animate-in fade-in">
+    <div className="max-w-4xl mx-auto px-3 md:px-4 py-4 md:py-12 w-full animate-in fade-in">
       
       {/* Header */}
-      <div className="mb-10 text-center md:text-left flex flex-col md:flex-row md:items-end justify-between gap-6">
+      <div className="mb-5 md:mb-10 text-center md:text-left flex flex-col md:flex-row md:items-end justify-between gap-4 md:gap-6">
         <div>
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-indigo-100 text-indigo-600 mb-4 md:mb-6">
-            <BookOpen className="w-8 h-8" />
+          <div className="inline-flex items-center justify-center w-10 h-10 md:w-16 md:h-16 rounded-full bg-indigo-100 text-indigo-600 mb-2 md:mb-6">
+            <BookOpen className="w-5 h-5 md:w-8 md:h-8" />
           </div>
-          <h1 className="text-3xl md:text-5xl font-display font-bold text-slate-900 mb-3">Know Your Rights</h1>
-          <p className="text-lg text-slate-600 max-w-2xl">
+          <h1 className="text-2xl md:text-5xl font-display font-bold text-slate-900 mb-1 md:mb-3">Know Your Rights</h1>
+          <p className="text-sm md:text-lg text-slate-600 max-w-2xl">
             Knowledge is your best protection. Understand your legal rights during interactions with law enforcement.
           </p>
         </div>
       </div>
 
       {/* Emergency Quick Action */}
-      <div className="bg-red-50 border border-red-100 rounded-2xl p-5 mb-8 flex flex-col sm:flex-row items-center justify-between gap-4">
-        <div className="flex items-center gap-4">
-          <div className="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center text-red-600 shrink-0">
-            <ShieldAlert className="w-6 h-6" />
+      <div className="bg-red-50 border border-red-100 rounded-xl md:rounded-2xl p-3 md:p-5 mb-5 md:mb-8 flex flex-col sm:flex-row items-center justify-between gap-3 md:gap-4">
+        <div className="flex items-center gap-3 md:gap-4">
+          <div className="w-10 h-10 md:w-12 md:h-12 bg-red-100 rounded-full flex items-center justify-center text-red-600 shrink-0">
+            <ShieldAlert className="w-5 h-5 md:w-6 md:h-6" />
           </div>
           <div>
-            <h3 className="font-bold text-red-900">Need immediate legal help?</h3>
-            <p className="text-sm text-red-700">If you've been arrested, ask for a lawyer immediately.</p>
+            <h3 className="font-bold text-red-900 text-sm md:text-base">Need immediate legal help?</h3>
+            <p className="text-xs md:text-sm text-red-700">If you've been arrested, ask for a lawyer immediately.</p>
           </div>
         </div>
-        <button className="w-full sm:w-auto px-6 py-2.5 bg-white text-red-700 font-semibold rounded-full border border-red-200 shadow-sm hover:bg-red-50 transition-colors flex items-center justify-center gap-2">
+        <button className="w-full sm:w-auto px-5 md:px-6 py-2 md:py-2.5 bg-white text-red-700 font-semibold rounded-full border border-red-200 shadow-sm hover:bg-red-50 transition-colors flex items-center justify-center gap-2 text-sm md:text-base">
           <PhoneCall className="w-4 h-4" /> Call Legal Aid
         </button>
       </div>
 
       {/* Accordion List */}
-      <div className="space-y-4">
+      <div className="space-y-3 md:space-y-4">
         {isLoading ? (
           Array(4).fill(0).map((_, i) => (
-            <div key={i} className="h-20 bg-slate-100 animate-pulse rounded-2xl"></div>
+            <div key={i} className="h-16 md:h-20 bg-slate-100 animate-pulse rounded-xl md:rounded-2xl"></div>
           ))
         ) : (
           rights.map((right) => (
             <div 
               key={right.id} 
               className={cn(
-                "bg-white rounded-2xl border transition-all duration-300 overflow-hidden",
+                "bg-white rounded-xl md:rounded-2xl border transition-all duration-300 overflow-hidden",
                 openCardId === right.id 
                   ? "border-primary shadow-lg shadow-primary/5" 
                   : "border-slate-200 hover:border-slate-300"
@@ -93,24 +91,24 @@ export default function Rights() {
             >
               <button 
                 onClick={() => setOpenCardId(openCardId === right.id ? null : right.id)}
-                className="w-full flex items-center justify-between p-5 text-left focus:outline-none"
+                className="w-full flex items-center justify-between p-3.5 md:p-5 text-left focus:outline-none"
               >
-                <div className="flex items-center gap-4">
+                <div className="flex items-center gap-3 md:gap-4">
                   <div className={cn(
-                    "w-10 h-10 rounded-full flex items-center justify-center transition-colors",
+                    "w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center transition-colors",
                     openCardId === right.id ? "bg-primary text-white" : "bg-slate-100 text-slate-500"
                   )}>
-                    <Scale className="w-5 h-5" />
+                    <Scale className="w-4 h-4 md:w-5 md:h-5" />
                   </div>
                   <h3 className={cn(
-                    "text-lg font-bold transition-colors",
+                    "text-base md:text-lg font-bold transition-colors",
                     openCardId === right.id ? "text-primary" : "text-slate-800"
                   )}>
                     {right.title}
                   </h3>
                 </div>
                 <ChevronDown className={cn(
-                  "w-5 h-5 text-slate-400 transition-transform duration-300",
+                  "w-5 h-5 text-slate-400 transition-transform duration-300 shrink-0 ml-2",
                   openCardId === right.id && "rotate-180 text-primary"
                 )} />
               </button>
@@ -122,7 +120,7 @@ export default function Rights() {
                 )}
               >
                 <div className="overflow-hidden">
-                  <div className="p-5 pt-0 border-t border-slate-100 mt-2 text-slate-600 leading-relaxed text-lg">
+                  <div className="p-3.5 md:p-5 pt-0 border-t border-slate-100 mt-1 md:mt-2 text-slate-600 leading-relaxed text-sm md:text-lg">
                     {right.content}
                   </div>
                 </div>
@@ -132,7 +130,7 @@ export default function Rights() {
         )}
       </div>
 
-      <div className="mt-12 text-center text-sm text-slate-400">
+      <div className="mt-8 md:mt-12 text-center text-xs md:text-sm text-slate-400">
         Disclaimer: This information is for educational purposes and does not constitute legal advice.
       </div>
     </div>

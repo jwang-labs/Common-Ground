@@ -1,7 +1,7 @@
 import { useEffect, useState, useRef } from "react";
 import { useGetPrecinctStats } from "@workspace/api-client-react";
 import { MapContainer, TileLayer, useMap, useMapEvents } from "react-leaflet";
-import { Activity, ShieldAlert, Award, X } from "lucide-react";
+import { Activity, ShieldAlert, Award, X, ChevronUp } from "lucide-react";
 import type { PrecinctStat } from "@workspace/api-client-react";
 import L from "leaflet";
 import "leaflet.heat";
@@ -80,16 +80,23 @@ function MapClickHandler({ onMapClick }: { onMapClick: () => void }) {
 export default function MapPage() {
   const { data: stats, isLoading } = useGetPrecinctStats();
   const [selectedPrecinct, setSelectedPrecinct] = useState<PrecinctStat | null>(null);
+  const [sheetExpanded, setSheetExpanded] = useState(false);
 
   const defaultCenter: [number, number] = [30.2672, -97.7431];
   const mapCenter = stats && stats.length > 0 
     ? [stats[0].latitude, stats[0].longitude] as [number, number]
     : defaultCenter;
 
+  const handleSelectPrecinct = (stat: PrecinctStat) => {
+    setSelectedPrecinct(stat);
+    setSheetExpanded(true);
+  };
+
   return (
     <div className="flex flex-col h-[calc(100vh-4rem-5rem)] md:h-[calc(100vh-4rem)] w-full relative bg-slate-50 overflow-hidden animate-in fade-in duration-500">
       
-      <div className="absolute top-4 left-4 md:left-8 z-[1000] w-[calc(100%-2rem)] md:w-96 max-h-[80vh] flex flex-col pointer-events-none">
+      {/* Desktop Overlay Panel */}
+      <div className="hidden md:flex absolute top-4 left-8 z-[1000] w-96 max-h-[80vh] flex-col pointer-events-none">
         <div className="bg-white/90 backdrop-blur-xl rounded-2xl shadow-2xl border border-white/50 p-5 pointer-events-auto flex flex-col gap-4">
           <div className="flex items-start justify-between">
             <div>
@@ -108,58 +115,7 @@ export default function MapPage() {
           </div>
 
           {selectedPrecinct ? (
-            <div className="animate-in slide-in-from-right-4 duration-300">
-              <div className="py-3 border-t border-slate-100">
-                <h2 className="text-lg font-bold text-primary mb-3">{selectedPrecinct.precinct}</h2>
-                
-                <div className="grid grid-cols-2 gap-3 mb-4">
-                  <div className="bg-slate-50 rounded-xl p-3 border border-slate-100">
-                    <div className="flex items-center gap-2 text-slate-500 mb-1">
-                      <ShieldAlert className="w-4 h-4" />
-                      <span className="text-xs font-medium uppercase tracking-wider">Reports</span>
-                    </div>
-                    <span className="text-2xl font-bold text-slate-900">{selectedPrecinct.totalReports}</span>
-                  </div>
-                  
-                  <div className="bg-slate-50 rounded-xl p-3 border border-slate-100">
-                    <div className="flex items-center gap-2 text-slate-500 mb-1">
-                      <Award className="w-4 h-4" />
-                      <span className="text-xs font-medium uppercase tracking-wider">Praises</span>
-                    </div>
-                    <span className="text-2xl font-bold text-slate-900">{selectedPrecinct.totalRecognitions}</span>
-                  </div>
-                </div>
-
-                <div className="space-y-3">
-                  <div className="flex justify-between items-center">
-                    <span className="text-sm text-slate-600">Politeness Rating</span>
-                    <span className="text-sm font-bold text-slate-900">
-                      {selectedPrecinct.avgPoliteness ? `${(selectedPrecinct.avgPoliteness * 100).toFixed(0)}%` : 'N/A'}
-                    </span>
-                  </div>
-                  <div className="w-full bg-slate-100 rounded-full h-2">
-                    <div 
-                      className="bg-primary h-2 rounded-full" 
-                      style={{ width: `${(selectedPrecinct.avgPoliteness || 0) * 100}%` }}
-                    />
-                  </div>
-
-                  <div className="flex justify-between items-center pt-2">
-                    <span className="text-sm text-slate-600">Use of Force Rate</span>
-                    <span className="text-sm font-bold text-orange-600">
-                      {selectedPrecinct.forceRate ? `${(selectedPrecinct.forceRate * 100).toFixed(1)}%` : 'N/A'}
-                    </span>
-                  </div>
-                  
-                  <div className="flex justify-between items-center pt-2">
-                    <span className="text-sm text-slate-600">Top Incident Type</span>
-                    <span className="text-sm font-bold text-slate-900 capitalize">
-                      {selectedPrecinct.topIncidentType?.replace('_', ' ') || 'Unknown'}
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </div>
+            <PrecinctDetails precinct={selectedPrecinct} />
           ) : (
             <div className="py-8 text-center border-t border-slate-100">
               <Activity className="w-12 h-12 text-slate-300 mx-auto mb-3" />
@@ -169,6 +125,36 @@ export default function MapPage() {
         </div>
       </div>
 
+      {/* Mobile Bottom Sheet */}
+      <div className={`md:hidden absolute bottom-0 left-0 right-0 z-[1000] transition-transform duration-300 ease-out ${sheetExpanded ? 'translate-y-0' : 'translate-y-[calc(100%-3.5rem)]'}`}>
+        <div className="bg-white/95 backdrop-blur-xl rounded-t-2xl shadow-[0_-4px_24px_rgba(0,0,0,0.12)] border-t border-slate-200">
+          <button 
+            onClick={() => setSheetExpanded(!sheetExpanded)}
+            className="w-full flex flex-col items-center pt-2 pb-3 px-4"
+          >
+            <div className="w-10 h-1 bg-slate-300 rounded-full mb-2"></div>
+            <div className="w-full flex items-center justify-between">
+              <span className="text-sm font-bold text-slate-900">
+                {selectedPrecinct ? selectedPrecinct.precinct : "Precinct Data"}
+              </span>
+              <ChevronUp className={`w-4 h-4 text-slate-400 transition-transform duration-300 ${sheetExpanded ? 'rotate-180' : ''}`} />
+            </div>
+          </button>
+          
+          <div className="px-4 pb-6 max-h-[60vh] overflow-y-auto">
+            {selectedPrecinct ? (
+              <PrecinctDetails precinct={selectedPrecinct} />
+            ) : (
+              <div className="py-6 text-center">
+                <Activity className="w-10 h-10 text-slate-300 mx-auto mb-2" />
+                <p className="text-slate-500 text-sm font-medium">Tap a marker to view details</p>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* Map Container */}
       <div className="h-full w-full relative z-0">
         {isLoading && (
           <div className="absolute inset-0 bg-slate-100/50 backdrop-blur-sm z-[500] flex items-center justify-center">
@@ -206,7 +192,7 @@ export default function MapPage() {
                 key={stat.precinct}
                 stat={stat}
                 intensity={intensity}
-                onSelect={setSelectedPrecinct}
+                onSelect={handleSelectPrecinct}
               />
             );
           });
@@ -264,4 +250,61 @@ function CircleMarkerInvisible({ stat, intensity, onSelect }: { stat: PrecinctSt
   }, [stat, intensity, map, onSelect]);
 
   return null;
+}
+
+function PrecinctDetails({ precinct }: { precinct: PrecinctStat }) {
+  return (
+    <div className="animate-in slide-in-from-right-4 duration-300">
+      <div className="py-3 border-t border-slate-100">
+        <h2 className="text-lg font-bold text-primary mb-3">{precinct.precinct}</h2>
+        
+        <div className="grid grid-cols-2 gap-3 mb-4">
+          <div className="bg-slate-50 rounded-xl p-3 border border-slate-100">
+            <div className="flex items-center gap-2 text-slate-500 mb-1">
+              <ShieldAlert className="w-4 h-4" />
+              <span className="text-xs font-medium uppercase tracking-wider">Reports</span>
+            </div>
+            <span className="text-2xl font-bold text-slate-900">{precinct.totalReports}</span>
+          </div>
+          
+          <div className="bg-slate-50 rounded-xl p-3 border border-slate-100">
+            <div className="flex items-center gap-2 text-slate-500 mb-1">
+              <Award className="w-4 h-4" />
+              <span className="text-xs font-medium uppercase tracking-wider">Praises</span>
+            </div>
+            <span className="text-2xl font-bold text-slate-900">{precinct.totalRecognitions}</span>
+          </div>
+        </div>
+
+        <div className="space-y-3">
+          <div className="flex justify-between items-center">
+            <span className="text-sm text-slate-600">Politeness Rating</span>
+            <span className="text-sm font-bold text-slate-900">
+              {precinct.avgPoliteness ? `${(precinct.avgPoliteness * 100).toFixed(0)}%` : 'N/A'}
+            </span>
+          </div>
+          <div className="w-full bg-slate-100 rounded-full h-2">
+            <div 
+              className="bg-primary h-2 rounded-full" 
+              style={{ width: `${(precinct.avgPoliteness || 0) * 100}%` }}
+            />
+          </div>
+
+          <div className="flex justify-between items-center pt-2">
+            <span className="text-sm text-slate-600">Use of Force Rate</span>
+            <span className="text-sm font-bold text-orange-600">
+              {precinct.forceRate ? `${(precinct.forceRate * 100).toFixed(1)}%` : 'N/A'}
+            </span>
+          </div>
+          
+          <div className="flex justify-between items-center pt-2">
+            <span className="text-sm text-slate-600">Top Incident Type</span>
+            <span className="text-sm font-bold text-slate-900 capitalize">
+              {precinct.topIncidentType?.replace('_', ' ') || 'Unknown'}
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 }
